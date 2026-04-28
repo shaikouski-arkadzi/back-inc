@@ -5,6 +5,7 @@ import {
   deleteTimeById,
   updateTimeById,
 } from "./repositories/timer.repository.js";
+import { validateId, validateISODate } from "./utils/index.js";
 
 export async function router(req, res) {
   // Получаем путь (с помощью утилиты parse) и метод из запроса
@@ -43,6 +44,18 @@ export async function router(req, res) {
   ) {
     const id = url.pathname.split("/")[2];
     const dateISO = url.query.saved_at;
+
+    if (!validateId(id)) {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "Invalid timer ID" }));
+      return;
+    }
+
+    if (!validateISODate(dateISO)) {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "Invalid saved_at format" }));
+      return;
+    }
 
     const result = await updateTimeById(id, dateISO);
 
