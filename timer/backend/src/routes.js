@@ -3,6 +3,7 @@ import {
   getAllTimes,
   saveCurrentTime,
   deleteTimeById,
+  updateTimeById,
 } from "./repositories/timer.repository.js";
 
 export async function router(req, res) {
@@ -32,6 +33,29 @@ export async function router(req, res) {
     await deleteTimeById(id);
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ message: `Deleted time with ID ${id}` }));
+    return;
+  }
+
+  if (
+    url.pathname?.startsWith("/timer/") &&
+    method === "PUT" &&
+    url.query.saved_at
+  ) {
+    const id = url.pathname.split("/")[2];
+    const dateISO = url.query.saved_at;
+
+    const result = await updateTimeById(id, dateISO);
+
+    if (!result) {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(
+        JSON.stringify({ message: "Record with this ID not found for update" }),
+      );
+      return;
+    }
+
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(result));
     return;
   }
 
