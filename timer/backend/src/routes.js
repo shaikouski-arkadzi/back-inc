@@ -14,7 +14,8 @@ export async function router(req, res) {
 
   // Обработка запроса: GET /timer
   if (url.pathname === "/timer" && method === "GET") {
-    const times = await getAllTimes();
+    const { from, to } = url.query;
+    const times = await getAllTimes(from, to);
 
     // Говорим клиенту: "Всё ок, вот JSON"
     res.writeHead(200, { "Content-Type": "application/json" });

@@ -1,7 +1,31 @@
 import { pool } from "../db.js";
 
-export async function getAllTimes() {
-  const result = await pool.query("SELECT * FROM times ORDER BY id DESC");
+export async function getAllTimes(from, to) {
+  if (from && to) {
+    const result = await pool.query(
+      "SELECT * FROM times WHERE saved_at BETWEEN $1 AND $2 ORDER BY saved_at DESC",
+      [from, to],
+    );
+    return result.rows;
+  }
+
+  if (from) {
+    const result = await pool.query(
+      "SELECT * FROM times WHERE saved_at >= $1 ORDER BY saved_at DESC",
+      [from],
+    );
+    return result.rows;
+  }
+
+  if (to) {
+    const result = await pool.query(
+      "SELECT * FROM times WHERE saved_at <= $1 ORDER BY saved_at DESC",
+      [to],
+    );
+    return result.rows;
+  }
+
+  const result = await pool.query("SELECT * FROM times ORDER BY saved_at DESC");
   return result.rows;
 }
 
