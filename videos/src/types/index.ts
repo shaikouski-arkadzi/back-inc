@@ -1,1 +1,6 @@
-export type { Resolution, VideoDto } from "./video";
+export {
+  RESOLUTIONS,
+  Resolution,
+  VideoDto,
+  CreateVideoInputDto,
+} from "./video";
