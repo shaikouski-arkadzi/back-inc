@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { CreateVideoInputDto, Resolution, RESOLUTIONS } from "../types";
+import { videos } from "../db/db";
 
 export const createVideo = (req: Request, res: Response) => {
   const video = req.body as CreateVideoInputDto;
@@ -117,14 +118,21 @@ export const createVideo = (req: Request, res: Response) => {
 
   const publicationDate = publicationDateDate.toISOString();
 
+  const lastVideo = videos[videos.length - 1];
+  const newId = lastVideo ? lastVideo.id + 1 : 0;
+
   const result = {
     ...video,
-    id: 0,
+    id: newId,
     canBeDownloaded: false,
     minAgeRestriction: null,
     createdAt: createdAt,
     publicationDate: publicationDate,
   };
+
+  videos.push(result);
+
+  console.log(videos);
 
   res.status(201).json(result);
 };
