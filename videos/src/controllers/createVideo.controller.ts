@@ -110,7 +110,21 @@ export const createVideo = (req: Request, res: Response) => {
     });
   }
 
-  console.log(video);
+  const createdAt = new Date().toISOString();
 
-  res.status(201).json(video);
+  const publicationDateDate = new Date(createdAt);
+  publicationDateDate.setDate(publicationDateDate.getDate() + 1);
+
+  const publicationDate = publicationDateDate.toISOString();
+
+  const result = {
+    ...video,
+    id: 0,
+    canBeDownloaded: false,
+    minAgeRestriction: null,
+    createdAt: createdAt,
+    publicationDate: publicationDate,
+  };
+
+  res.status(201).json(result);
 };
