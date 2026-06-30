@@ -4,7 +4,7 @@ import { videos } from "../db/db";
 
 export const createVideo = (req: Request, res: Response) => {
   const video = req.body as CreateVideoInputDto;
-
+  console.log(video);
   if (!video?.title) {
     return res.status(400).json({
       errorsMessages: [
