@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "builds": [{ "src": "videos/src/index.ts", "use": "@vercel/node" }],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "videos/src/index.ts"
+    }
+  ]
+}
