@@ -197,27 +197,31 @@ export const updateVideo = (req: Request, res: Response) => {
 
   const videoIndex = videos.findIndex((v) => v.id === Number(id));
 
-  const publicationDate = new Date(video.publicationDate);
-  const createdAt = new Date(videos[videoIndex].createdAt);
+  if (videoIndex !== -1) {
+    const publicationDate = new Date(video.publicationDate);
+    const createdAt = new Date(videos[videoIndex].createdAt);
 
-  const oneDay = 24 * 60 * 60 * 1000;
+    const oneDay = 24 * 60 * 60 * 1000;
 
-  if (publicationDate.getTime() < createdAt.getTime() + oneDay) {
-    return res.status(400).json({
-      errorsMessages: [
-        {
-          message:
-            "Переданный publicationDate меньше чем createdAt плюс один день",
-          field: "publicationDate",
-        },
-      ],
-    });
+    if (publicationDate.getTime() < createdAt.getTime() + oneDay) {
+      return res.status(400).json({
+        errorsMessages: [
+          {
+            message:
+              "Переданный publicationDate меньше чем createdAt плюс один день",
+            field: "publicationDate",
+          },
+        ],
+      });
+    }
+
+    videos[videoIndex] = {
+      ...videos[videoIndex],
+      ...video,
+    };
+
+    res.sendStatus(204);
+  } else {
+    res.sendStatus(404);
   }
-
-  videos[videoIndex] = {
-    ...videos[videoIndex],
-    ...video,
-  };
-
-  res.sendStatus(204);
 };
