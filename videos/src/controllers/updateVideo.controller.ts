@@ -1,9 +1,12 @@
 import { Request, Response } from "express";
 import { UpdateVideoInputDto, Resolution, RESOLUTIONS } from "../types";
 import { isValidISODate } from "../utils";
+import { videos } from "../db/db";
 
 export const updateVideo = (req: Request, res: Response) => {
   const video = req.body as UpdateVideoInputDto;
+
+  const { id } = req.params;
 
   if (!video?.title) {
     return res.status(400).json({
@@ -186,6 +189,25 @@ export const updateVideo = (req: Request, res: Response) => {
       errorsMessages: [
         {
           message: "Некорректная ISO строка",
+          field: "publicationDate",
+        },
+      ],
+    });
+  }
+
+  const videoIndex = videos.findIndex((v) => v.id === Number(id));
+
+  const publicationDate = new Date(video.publicationDate);
+  const createdAt = new Date(videos[videoIndex].createdAt);
+
+  const oneDay = 24 * 60 * 60 * 1000;
+
+  if (publicationDate.getTime() < createdAt.getTime() + oneDay) {
+    return res.status(400).json({
+      errorsMessages: [
+        {
+          message:
+            "Переданный publicationDate меньше чем createdAt плюс один день",
           field: "publicationDate",
         },
       ],
