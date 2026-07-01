@@ -25,10 +25,9 @@ export interface VideoDto {
   availableResolutions: Resolution[];
 }
 
-export interface CreateVideoInputDto {
-  // maxLength: 40
-  title: string;
-  // maxLength: 20
-  author: string;
-  availableResolutions: Resolution[];
-}
+export type CreateVideoInputDto = Pick<
+  VideoDto,
+  "title" | "author" | "availableResolutions"
+>;
+
+export type UpdateVideoInputDto = Omit<VideoDto, "id" | "createdAt">;

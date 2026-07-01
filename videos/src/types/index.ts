@@ -3,4 +3,5 @@ export {
   Resolution,
   VideoDto,
   CreateVideoInputDto,
+  UpdateVideoInputDto,
 } from "./video";
