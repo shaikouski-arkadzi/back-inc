@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { UpdateVideoInputDto, Resolution, RESOLUTIONS } from "../types";
+import { isValidISODate } from "../utils";
 
 export const updateVideo = (req: Request, res: Response) => {
   const video = req.body as UpdateVideoInputDto;
@@ -174,6 +175,17 @@ export const updateVideo = (req: Request, res: Response) => {
         {
           message:
             "Неправильный формат. Должен быть датой ISO в строковом формате",
+          field: "publicationDate",
+        },
+      ],
+    });
+  }
+
+  if (!isValidISODate(video.publicationDate)) {
+    return res.status(400).json({
+      errorsMessages: [
+        {
+          message: "Некорректная ISO строка",
           field: "publicationDate",
         },
       ],
