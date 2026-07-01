@@ -214,5 +214,10 @@ export const updateVideo = (req: Request, res: Response) => {
     });
   }
 
+  videos[videoIndex] = {
+    ...videos[videoIndex],
+    ...video,
+  };
+
   res.sendStatus(204);
 };
