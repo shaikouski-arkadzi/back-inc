@@ -20,25 +20,25 @@ export const updateVideo = (
 
   const messages: FieldError[] = [];
 
-  if (!video?.title) {
-    messages.push({
-      message: "Поле обязательное",
-      field: "title",
-    });
-  }
-
-  if (typeof video.title !== "string") {
+  if (typeof video?.title !== "string") {
     messages.push({
       message: "Неправильный формат. Должен быть строкой",
       field: "title",
     });
-  }
+  } else {
+    if (video.title.length === 0) {
+      messages.push({
+        message: "Поле обязательное",
+        field: "title",
+      });
+    }
 
-  if (video.title.length > 40) {
-    messages.push({
-      message: "Длина поля должна быть не больше 40 символов",
-      field: "title",
-    });
+    if (video.title.length > 40) {
+      messages.push({
+        message: "Длина поля должна быть не больше 40 символов",
+        field: "title",
+      });
+    }
   }
 
   if (!video.author) {
