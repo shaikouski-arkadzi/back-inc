@@ -4,4 +4,6 @@ export {
   VideoDto,
   CreateVideoInputDto,
   UpdateVideoInputDto,
+  APIErrorResult,
+  FieldError,
 } from "./video";

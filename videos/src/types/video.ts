@@ -31,3 +31,12 @@ export type CreateVideoInputDto = Pick<
 >;
 
 export type UpdateVideoInputDto = Omit<VideoDto, "id" | "createdAt">;
+
+export interface APIErrorResult {
+  errorsMessages: FieldError[];
+}
+
+export interface FieldError {
+  message: string;
+  field: string;
+}
