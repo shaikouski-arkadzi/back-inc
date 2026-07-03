@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 import { videos } from "../db/db";
 
-export const deleteVideo = (req: Request, res: Response) => {
+export const deleteVideo = (
+  req: Request<{ id: string }>,
+  res: Response<null>,
+) => {
   const { id } = req.params;
 
   const index = videos.findIndex((video) => video.id === Number(id));

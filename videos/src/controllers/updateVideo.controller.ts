@@ -1,10 +1,18 @@
 import { Request, Response } from "express";
-import { UpdateVideoInputDto, Resolution, RESOLUTIONS } from "../types";
+import {
+  UpdateVideoInputDto,
+  Resolution,
+  RESOLUTIONS,
+  APIErrorResult,
+} from "../types";
 import { isValidISODate } from "../utils";
 import { videos } from "../db/db";
 
-export const updateVideo = (req: Request, res: Response) => {
-  const video = req.body as UpdateVideoInputDto;
+export const updateVideo = (
+  req: Request<{ id: string }, {}, UpdateVideoInputDto>,
+  res: Response<APIErrorResult | null>,
+) => {
+  const video = req.body;
 
   const { id } = req.params;
 

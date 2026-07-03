@@ -1,9 +1,18 @@
 import { Request, Response } from "express";
-import { CreateVideoInputDto, Resolution, RESOLUTIONS } from "../types";
+import {
+  APIErrorResult,
+  CreateVideoInputDto,
+  Resolution,
+  RESOLUTIONS,
+  VideoDto,
+} from "../types";
 import { videos } from "../db/db";
 
-export const createVideo = (req: Request, res: Response) => {
-  const video = req.body as CreateVideoInputDto;
+export const createVideo = (
+  req: Request<{}, {}, CreateVideoInputDto>,
+  res: Response<VideoDto | APIErrorResult>,
+) => {
+  const video = req.body;
 
   if (!video?.title) {
     return res.status(400).json({

@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 import { videos } from "../db/db";
 
-export const getVideo = (req: Request, res: Response) => {
+export const getVideo = (
+  req: Request<{ id: string }>,
+  res: Response<VideoDto | null>,
+) => {
   const { id } = req.params;
   const result = videos.find((video) => video.id === Number(id));
   if (result) {
