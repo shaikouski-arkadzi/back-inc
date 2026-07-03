@@ -18,6 +18,12 @@ export const updateVideo = (
 
   const { id } = req.params;
 
+  const videoIndex = videos.findIndex((v) => v.id === Number(id));
+
+  if (videoIndex === -1) {
+    return res.sendStatus(404);
+  }
+
   const messages: FieldError[] = [];
 
   if (typeof video?.title !== "string") {
@@ -141,35 +147,28 @@ export const updateVideo = (
     });
   }
 
-  const videoIndex = videos.findIndex((v) => v.id === Number(id));
+  const publicationDate = new Date(video.publicationDate);
+  const createdAt = new Date(videos[videoIndex].createdAt);
 
-  if (videoIndex !== -1) {
-    const publicationDate = new Date(video.publicationDate);
-    const createdAt = new Date(videos[videoIndex].createdAt);
+  const oneDay = 24 * 60 * 60 * 1000;
 
-    const oneDay = 24 * 60 * 60 * 1000;
-
-    if (publicationDate.getTime() < createdAt.getTime() + oneDay) {
-      messages.push({
-        message:
-          "Переданный publicationDate меньше чем createdAt плюс один день",
-        field: "publicationDate",
-      });
-    }
-
-    if (messages.length) {
-      return res.status(400).json({
-        errorsMessages: messages,
-      });
-    }
-
-    videos[videoIndex] = {
-      ...videos[videoIndex],
-      ...video,
-    };
-
-    res.sendStatus(204);
-  } else {
-    res.sendStatus(404);
+  if (publicationDate.getTime() < createdAt.getTime() + oneDay) {
+    messages.push({
+      message: "Переданный publicationDate меньше чем createdAt плюс один день",
+      field: "publicationDate",
+    });
   }
+
+  if (messages.length) {
+    return res.status(400).json({
+      errorsMessages: messages,
+    });
+  }
+
+  videos[videoIndex] = {
+    ...videos[videoIndex],
+    ...video,
+  };
+
+  res.sendStatus(204);
 };
