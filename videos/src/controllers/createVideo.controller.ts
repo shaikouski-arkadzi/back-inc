@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import {
   APIErrorResult,
   CreateVideoInputDto,
+  FieldError,
   Resolution,
   RESOLUTIONS,
   VideoDto,
@@ -14,92 +15,61 @@ export const createVideo = (
 ) => {
   const video = req.body;
 
+  const messages: FieldError[] = [];
+
   if (!video?.title) {
-    return res.status(400).json({
-      errorsMessages: [
-        {
-          message: "Поле обязательное",
-          field: "title",
-        },
-      ],
+    messages.push({
+      message: "Поле обязательное",
+      field: "title",
     });
   }
 
   if (typeof video.title !== "string") {
-    return res.status(400).json({
-      errorsMessages: [
-        {
-          message: "Неправильный формат. Должен быть строкой",
-          field: "title",
-        },
-      ],
+    messages.push({
+      message: "Неправильный формат. Должен быть строкой",
+      field: "title",
     });
   }
 
   if (video.title.length > 40) {
-    return res.status(400).json({
-      errorsMessages: [
-        {
-          message: "Длина поля должна быть не больше 40 символов",
-          field: "title",
-        },
-      ],
+    messages.push({
+      message: "Длина поля должна быть не больше 40 символов",
+      field: "title",
     });
   }
 
   if (!video.author) {
-    return res.status(400).json({
-      errorsMessages: [
-        {
-          message: "Поле обязательное",
-          field: "author",
-        },
-      ],
+    messages.push({
+      message: "Поле обязательное",
+      field: "author",
     });
   }
 
   if (typeof video.author !== "string") {
-    return res.status(400).json({
-      errorsMessages: [
-        {
-          message: "Неправильный формат. Должен быть строкой",
-          field: "author",
-        },
-      ],
+    messages.push({
+      message: "Неправильный формат. Должен быть строкой",
+      field: "author",
     });
   }
 
   if (video.author.length > 20) {
-    return res.status(400).json({
-      errorsMessages: [
-        {
-          message: "Длина поля должна быть не больше 20 символов",
-          field: "author",
-        },
-      ],
+    messages.push({
+      message: "Длина поля должна быть не больше 20 символов",
+      field: "author",
     });
   }
 
   if (!video.availableResolutions) {
-    return res.status(400).json({
-      errorsMessages: [
-        {
-          message: "Поле обязательное",
-          field: "availableResolutions",
-        },
-      ],
+    messages.push({
+      message: "Поле обязательное",
+      field: "availableResolutions",
     });
   }
 
   if (!Array.isArray(video.availableResolutions)) {
-    return res.status(400).json({
-      errorsMessages: [
-        {
-          message:
-            "Неправильный формат availableResolutions. Должен быть массивом",
-          field: "availableResolutions",
-        },
-      ],
+    messages.push({
+      message: "Неправильный формат availableResolutions. Должен быть массивом",
+      field: "availableResolutions",
     });
   }
 
@@ -110,13 +80,15 @@ export const createVideo = (
     );
 
   if (!isValidResolutions) {
+    messages.push({
+      message: "Некорректное разрешение",
+      field: "availableResolutions",
+    });
+  }
+
+  if (messages.length) {
     return res.status(400).json({
-      errorsMessages: [
-        {
-          message: "Некорректное разрешение",
-          field: "availableResolutions",
-        },
-      ],
+      errorsMessages: messages,
     });
   }
 
@@ -130,7 +102,7 @@ export const createVideo = (
   const lastVideo = videos[videos.length - 1];
   const newId = lastVideo ? lastVideo.id + 1 : 0;
 
-  const result = {
+  const result: VideoDto = {
     ...video,
     id: newId,
     canBeDownloaded: false,

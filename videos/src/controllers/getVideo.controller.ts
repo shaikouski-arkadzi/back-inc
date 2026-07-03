@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { videos } from "../db/db";
+import { VideoDto } from "../types";
 
 export const getVideo = (
   req: Request<{ id: string }>,
