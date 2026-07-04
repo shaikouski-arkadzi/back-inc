@@ -126,37 +126,38 @@ export const updateVideo = (
     });
   }
 
-  if (!video.publicationDate) {
-    messages.push({
-      message: "Поле обязательное",
-      field: "publicationDate",
-    });
-  }
-
   if (typeof video.publicationDate !== "string") {
     messages.push({
       message: "Неправильный формат. Должен быть датой ISO в строковом формате",
       field: "publicationDate",
     });
-  }
+  } else {
+    if (!video.publicationDate) {
+      messages.push({
+        message: "Поле обязательное",
+        field: "publicationDate",
+      });
+    }
 
-  if (!isValidISODate(video.publicationDate)) {
-    messages.push({
-      message: "Некорректная ISO строка",
-      field: "publicationDate",
-    });
-  }
+    if (!isValidISODate(video.publicationDate)) {
+      messages.push({
+        message: "Некорректная ISO строка",
+        field: "publicationDate",
+      });
+    }
 
-  const publicationDate = new Date(video.publicationDate);
-  const createdAt = new Date(videos[videoIndex].createdAt);
+    const publicationDate = new Date(video.publicationDate);
+    const createdAt = new Date(videos[videoIndex].createdAt);
 
-  const oneDay = 24 * 60 * 60 * 1000;
+    const oneDay = 24 * 60 * 60 * 1000;
 
-  if (publicationDate.getTime() < createdAt.getTime() + oneDay) {
-    messages.push({
-      message: "Переданный publicationDate меньше чем createdAt плюс один день",
-      field: "publicationDate",
-    });
+    if (publicationDate.getTime() < createdAt.getTime() + oneDay) {
+      messages.push({
+        message:
+          "Переданный publicationDate меньше чем createdAt плюс один день",
+        field: "publicationDate",
+      });
+    }
   }
 
   if (messages.length) {
